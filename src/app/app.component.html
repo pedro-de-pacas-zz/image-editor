@@ -11,7 +11,7 @@
                  [bounds]="bounder" [inBounds]="false" [scale]="(zoom$ | async) || 1"
                  [position]="text.position" (endOffset)="dragStopped($event, text)"
                  (change)="updateContent($event, text)" [ngModel]="text.content"
-                 (edge)="drag($event)">
+                 (edge)="edge($event)">
         </div>
       </div>
       <div class="previews-container d-flex justify-content-center">
