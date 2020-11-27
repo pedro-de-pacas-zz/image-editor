@@ -10,6 +10,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { reducers, metaReducers } from './reducers';
 import { FormsModule } from '@angular/forms';
 import { AngularDraggableModule } from 'angular2-draggable';
+import { ImageFacade } from './facades/image.facade';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import { AngularDraggableModule } from 'angular2-draggable';
     StoreRouterConnectingModule.forRoot(),
     FormsModule,
   ],
-  providers: [],
+  providers: [ImageFacade],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

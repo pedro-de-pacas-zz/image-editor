@@ -1,12 +1,7 @@
 import { Component } from '@angular/core';
-import { EditingImage, ImageWithHistory, TextInput } from './entities/image';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import * as ImageSelectors from './reducers/images/editing-image.selector';
-import * as ImageActions from './reducers/images/editing-image.actions';
-import { State } from './reducers';
-import { map } from 'rxjs/operators';
+import { ImageWithHistory, TextInput } from './entities/image';
 import { IPosition } from 'angular2-draggable';
+import { ImageFacade } from './facades/image.facade';
 
 @Component({
   selector: 'app-root',
@@ -14,19 +9,8 @@ import { IPosition } from 'angular2-draggable';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'image-editor';
 
-  /**
-   * observables for template updating
-   */
-  public selectedImage$: Observable<EditingImage> = this.store$.pipe(select(ImageSelectors.selectEditingImage));
-  public images$: Observable<ImageWithHistory[]> = this.store$.pipe(select(ImageSelectors.selectImages));
-  public zoom$: Observable<number> = this.store$.pipe(select(ImageSelectors.zoomLevel));
-  public rotate$: Observable<number> = this.store$.pipe(select(ImageSelectors.rotateAngle));
-  public disableUndo$: Observable<boolean> = this.store$.pipe(select(ImageSelectors.selectImageWithHistory),
-    map(image => image.previous.length === 0));
-  public disableRedo$: Observable<boolean> = this.store$.pipe(select(ImageSelectors.selectImageWithHistory),
-    map(image => image.next.length === 0));
+  title = 'image-editor';
 
   /**
    * Used for deleting action recognition
@@ -36,16 +20,40 @@ export class AppComponent {
   isInBounds = true;
 
   /**
+   * Share facade methods
+   */
+  selectedImage$ = this.imageFacade.selectedImage$;
+  images$ = this.imageFacade.images$;
+  zoom$ = this.imageFacade.zoom$;
+  rotate$ = this.imageFacade.rotate$;
+  disableUndo$ = this.imageFacade.disableUndo$;
+  disableRedo$ = this.imageFacade.disableRedo$;
+
+  /**
    * Calculates top position of text in preview
    * Called from template
    *
    * @param text source data for calculating
    */
   getTop = (text: TextInput) => `${text.position.y / 9}%`;
+
+  /**
+   * Calculates left position of text in preview
+   * Called from template
+   *
+   * @param text source data for calculating
+   */
   getLeft = (text: TextInput) => `${text.position.x / 9}%`;
+
+  /**
+   * Create transform string for preview
+   * Called from template
+   *
+   * @param image source data for transform function
+   */
   getTransform = (image: ImageWithHistory) => `scale(${image.current.zoom}) rotate(${image.current.rotate}deg)`;
 
-  constructor(private store$: Store<State>) {
+  constructor(private imageFacade: ImageFacade) {
   }
 
   /**
@@ -55,7 +63,7 @@ export class AppComponent {
    * @param index index of image to select
    */
   selectImage(index: number): void {
-    this.store$.dispatch(ImageActions.setEditingImageAction({index}));
+    this.imageFacade.selectImage(index);
   }
 
   /**
@@ -63,7 +71,7 @@ export class AppComponent {
    * Used for adding TextInput object into inputs array of EditingImage object
    */
   addTextBlock(): void {
-    this.store$.dispatch(ImageActions.addInputToImageAction());
+    this.imageFacade.addTextBlock();
   }
 
   /**
@@ -72,7 +80,7 @@ export class AppComponent {
    * Multiplies zoom factor by 1.1
    */
   zoomIn(): void {
-    this.store$.dispatch(ImageActions.zommInAction());
+    this.imageFacade.zoomIn();
   }
 
   /**
@@ -81,7 +89,7 @@ export class AppComponent {
    * Multiplies zoom factor by 0.9
    */
   zoomOut(): void {
-    this.store$.dispatch(ImageActions.zommOutAction());
+    this.imageFacade.zoomOut();
   }
 
   /**
@@ -90,7 +98,7 @@ export class AppComponent {
    * Adds 45 degrees on every click
    */
   rotate(): void {
-    this.store$.dispatch(ImageActions.rotateAction());
+    this.imageFacade.rotate();
   }
 
   /**
@@ -102,7 +110,7 @@ export class AppComponent {
    * @param input text input caused event
    */
   updateContent(event: Event, input: TextInput): void {
-    this.store$.dispatch(ImageActions.updateContentAction({event, input}));
+    this.imageFacade.updateContent(event, input);
   }
 
   /**
@@ -111,7 +119,7 @@ export class AppComponent {
    * Replaces 'current' field in ImageWithHistory object
    */
   undo(): void {
-    this.store$.dispatch(ImageActions.undoAction());
+    this.imageFacade.undo();
   }
 
   /**
@@ -120,7 +128,7 @@ export class AppComponent {
    * Replaces 'current' field in ImageWithHistory object
    */
   redo(): void {
-    this.store$.dispatch(ImageActions.redoAction());
+    this.imageFacade.redo();
   }
 
   /**
@@ -132,14 +140,12 @@ export class AppComponent {
       return;
     }
     if (this.isInBounds) { // if input is inside of image
-      this.store$.dispatch(ImageActions.savePositionAction({
-        event, input
-      }));
+      this.imageFacade.savePosition(event, input);
     } else { // if input isn't inside of image
       if (window.confirm('Are you sure you want to remove this input?')) {
-        this.store$.dispatch(ImageActions.deleteTextAction({input})); // delete input
+        this.imageFacade.deleteTextInput(input);
       } else {
-        this.store$.dispatch(ImageActions.updatePositionAction()); // restore position of input
+        this.imageFacade.updatePosition();
       }
     }
   }
