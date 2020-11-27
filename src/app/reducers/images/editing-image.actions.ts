@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { TextInput } from '../../entities/image';
+import { ImageWithHistory, TextInput } from '../../entities/image';
 import { IPosition } from 'angular2-draggable';
 
 export const setEditingImageAction = createAction(
@@ -48,4 +48,13 @@ export const deleteTextAction = createAction(
 
 export const updatePositionAction = createAction(
   '[EDITING IMAGE] position updated'
+);
+
+export const loadImages = createAction(
+  '[LADING IMAGE] getting urls'
+);
+
+export const imagesAreLoaded = createAction(
+  '[LADING IMAGE] images are loaded',
+  props<{ images: ImageWithHistory[] }>()
 );

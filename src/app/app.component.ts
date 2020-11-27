@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ImageWithHistory, TextInput } from './entities/image';
 import { IPosition } from 'angular2-draggable';
 import { ImageFacade } from './facades/image.facade';
@@ -8,7 +8,7 @@ import { ImageFacade } from './facades/image.facade';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   title = 'image-editor';
 
@@ -54,6 +54,10 @@ export class AppComponent {
   getTransform = (image: ImageWithHistory) => `scale(${image.current.zoom}) rotate(${image.current.rotate}deg)`;
 
   constructor(private imageFacade: ImageFacade) {
+  }
+
+  ngOnInit(): void {
+    this.imageFacade.loadImages();
   }
 
   /**

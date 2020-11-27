@@ -11,6 +11,9 @@ import { reducers, metaReducers } from './reducers';
 import { FormsModule } from '@angular/forms';
 import { AngularDraggableModule } from 'angular2-draggable';
 import { ImageFacade } from './facades/image.facade';
+import { EffectsModule } from '@ngrx/effects';
+import { GetImagesUrlsService } from './services/get-images-urls.service';
+import { ImagesEffect } from './effects/images.effect';
 
 @NgModule({
   declarations: [
@@ -30,8 +33,9 @@ import { ImageFacade } from './facades/image.facade';
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
     StoreRouterConnectingModule.forRoot(),
     FormsModule,
+    EffectsModule.forRoot([ImagesEffect]),
   ],
-  providers: [ImageFacade],
+  providers: [ImageFacade, GetImagesUrlsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

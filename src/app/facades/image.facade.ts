@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { State } from '../reducers';
 import { Observable } from 'rxjs';
 import { EditingImage, ImageWithHistory, TextInput } from '../entities/image';
-import * as ImageSelectors from '../reducers/images/editing-image.selector';
+import * as ImageSelectors from '../reducers/images/editing-image.selectors';
 import { map } from 'rxjs/operators';
 import * as ImageActions from '../reducers/images/editing-image.actions';
 import { IPosition } from 'angular2-draggable';
@@ -69,5 +69,9 @@ export class ImageFacade {
 
   updatePosition(): void {
     this.store$.dispatch(ImageActions.updatePositionAction());
+  }
+
+  loadImages(): void {
+    this.store$.dispatch(ImageActions.loadImages());
   }
 }

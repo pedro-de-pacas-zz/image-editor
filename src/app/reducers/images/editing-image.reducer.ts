@@ -1,40 +1,20 @@
 import { createReducer, on } from '@ngrx/store';
 import * as EditingImageActions from './editing-image.actions';
 import { AppState } from '../index';
+import { newText } from '../../services/get-images-urls.service';
 
-const newText = 'Enter Text Here';
 
 export const appState: AppState = {
-  images: [
-    {
-      previous: [],
-      current: {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Alexandre_Lacauchie_-_Gilbert_Duprez_as_Gaston_in_Verdi%27s_J%C3%A9rusalem.jpg',
-        zoom: 1,
-        rotate: 0,
-        inputs: [{
-          position: {x: 0, y: 0},
-          content: newText
-        }]
-      },
-      next: [],
-    }, {
-      previous: [],
-      current: {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adolphe-Joseph-Louis_Alizard_from_Le_Charivari.jpg/800px-Adolphe-Joseph-Louis_Alizard_from_Le_Charivari.jpg',
-        zoom: 1,
-        rotate: 0,
-        inputs: [{
-          position: {x: 0, y: 0},
-          content: newText
-        }]
-      },
-      next: []
-    }], selectedImage: 0
+  images: [], selectedImage: 0
 };
 
 export const imagesReducer = createReducer(
   appState,
+  on(EditingImageActions.imagesAreLoaded, (state: AppState, {images}) => ({
+    ...state,
+    images,
+    selectedImage: 0
+  })),
   on(EditingImageActions.setEditingImageAction, (state: AppState, {index}) => ({
     ...state,
     selectedImage: index
