@@ -27,6 +27,10 @@ export class AppComponent {
 
   isInBounds = true;
 
+  getTop = (text: TextInput) => `${text.position.y / 9}%`;
+  getLeft = (text: TextInput) => `${text.position.x / 9}%`;
+  getTransform = (image: ImageWithHistory) => `scale(${image.current.zoom}) rotate(${image.current.rotate}deg)`;
+
   constructor(private store$: Store<State>) {
   }
 

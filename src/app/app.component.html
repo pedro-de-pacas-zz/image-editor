@@ -5,7 +5,7 @@
         <div class="image-container" #bounder
              [style.transform]="'scale(' + (zoom$ | async) + ') rotate(' + (rotate$ | async) + 'deg)'">
           <img [src]="(selectedImage$ | async)?.src" alt="">
-          <!-- due to ngDraggable bug it works only if rotate angle equals 0 -->
+          <!-- due to ngDraggable bug it works only if rotate angle equals to 0 -->
           <input [ngDraggable]="(rotate$ | async) === 0" type="text"
                  *ngFor="let text of (selectedImage$ | async)?.inputs"
                  [bounds]="bounder" [inBounds]="false" [scale]="(zoom$ | async) || 1"
@@ -16,11 +16,10 @@
       </div>
       <div class="previews-container d-flex justify-content-center">
         <div *ngFor="let image of images$ | async; index as i" class="preview-limiter">
-          <div class="preview-container" (click)="selectImage(i)"
-               [style.transform]="'scale(' + image.current.zoom + ') rotate(' + image.current.rotate + 'deg)'">
+          <div class="preview-container" (click)="selectImage(i)" [style.transform]="getTransform(image)">
             <img [src]="image.current.src" alt="">
             <input *ngFor="let text of image.current.inputs" class="preview" [ngModel]="text.content" disabled
-                   [style.top]="text.position.y / 9 + '%'" [style.left]="text.position.x / 9 + '%'">
+                   [style.top]="getTop(text)" [style.left]='getLeft(text)'>
           </div>
         </div>
       </div>
