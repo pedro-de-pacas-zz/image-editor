@@ -8,19 +8,56 @@ $base-color: #63ABFF;
   font-size: 10px;
   background: $base-color;
   border-width: 0;
+
   &:focus {
     outline: none;
     box-shadow: none;
   }
+
+  &:disabled {
+    background: lightgrey;
+  }
 }
 
 .editor-container {
-  .image-container {
-    height: 92vh;
+
+  height: 100vh;
+
+  .editor-limiter {
+    overflow: auto;
+    text-align: center;
+    height: 90%;
+
+    .image-container {
+      display: inline-block;
+      height: 100%;
+
+      img {
+        max-height: 100%;
+        max-width: 100%;
+      }
+    }
   }
+
   .previews-container {
-    height: 8vh;
+    height: 10%;
+
+    .preview-limiter {
+      overflow: hidden;
+      margin: 0.5vh;
+      cursor: pointer;
+
+      .preview-container {
+        position: relative;
+        height: 100%;
+
+        img {
+          height: 9vh
+        }
+      }
+    }
   }
+
   &::after {
     content: "";
     background: $base-color;
@@ -34,4 +71,32 @@ $base-color: #63ABFF;
 
 .p-100 {
   padding-top: 100px;
+}
+
+input {
+  &.preview {
+    font-size: 3px;
+  }
+
+  top: 0;
+  left: 0;
+  color: white;
+  position: absolute;
+  text-align: center;
+  background: transparent;
+  border: none;
+  font-size: 27px;
+
+  &:focus {
+    color: black;
+    background: white;
+  }
+}
+
+.ng-draggable {
+  cursor: grab;
+}
+
+.ng-dragging {
+  cursor: grabbing;
 }
